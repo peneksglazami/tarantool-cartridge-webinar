@@ -1,0 +1,44 @@
+demo.router1:
+  advertise_uri: tarantool-server1:3301
+  http_port: 8081
+  memtx_memory: 134217728
+
+demo.router2:
+  advertise_uri: tarantool-server2:3301
+  http_port: 8081
+  memtx_memory: 134217728
+
+demo.router3:
+  advertise_uri: tarantool-server3:3301
+  http_port: 8081
+  memtx_memory: 134217728
+
+demo.storage1-master:
+  advertise_uri: tarantool-server4:3301
+  http_enabled: false
+  memtx_memory: 134217728
+
+demo.storage1-replica1:
+  advertise_uri: tarantool-server5:3301
+  http_enabled: false
+  memtx_memory: 134217728
+
+demo.storage1-replica2:
+  advertise_uri: tarantool-server6:3301
+  http_enabled: false
+  memtx_memory: 134217728
+
+demo.storage2-replica1:
+  advertise_uri: tarantool-server7:3301
+  http_enabled: false
+  memtx_memory: 134217728
+
+demo.storage2-master:
+  advertise_uri: tarantool-server8:3301
+  http_enabled: false
+  memtx_memory: 134217728
+
+demo.storage2-replica2:
+  advertise_uri: tarantool-server9:3301
+  http_enabled: false
+  memtx_memory: 134217728

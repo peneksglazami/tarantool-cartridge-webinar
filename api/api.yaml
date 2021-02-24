@@ -1,0 +1,222 @@
+openapi: 3.0.0
+info:
+  title: Центр аутентификации
+  description: API демонстрационного приложения "Центр аутентификации"
+  version: 1.0.0
+
+paths:
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Аутентификация пользователя по логину и паролю
+      operationId: login
+      parameters:
+        - in: body
+          name: request
+          schema:
+            $ref: '#/components/schemas/loginRequest'
+      responses:
+        200:
+          description: >
+            Аутентификация пройдена успешно.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loginResponse'
+        403:
+          description: Указаны неверные логин и пароль
+
+  /user/{uuid}:
+    get:
+      tags:
+        - User
+      summary: Получение информации об учётной записи пользователя
+      operationId: getUser
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: UUID учётной записи пользователя
+          schema:
+            type: string
+      responses:
+        200:
+          description: Информация об учетной записи пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getUserResponse'
+    put:
+      tags:
+        - User
+      summary: Обновление учётной записи пользователя
+      operationId: updateUser
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: UUID учётной записи пользователя
+          schema:
+            type: string
+        - in: boby
+          name: userInfo
+          required: true
+          description: Обновлённая информация об учётных данных клиента
+          schema:
+            $ref: '#/components/schemas/updateUserRequest'
+      responses:
+        200:
+          description: Учётная запись пользователя обновлена
+    delete:
+      tags:
+        - User
+      summary: Удаление учетной записи пользователя
+      operationId: deleteUser
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: UUID учётной записи пользователя
+          schema:
+            type: string
+      responses:
+        200:
+          description: Учётная запись пользователя удалена
+  /user:
+    post:
+      tags:
+        - User
+      summary: Создание учетной записи пользователя
+      operationId: createUser
+      parameters:
+        - in: body
+          name: userInfo
+          required: true
+          schema:
+            $ref: '#/components/schemas/createUserRequest'
+      responses:
+        200:
+          description: Учётная запись успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createUserResponse'
+
+  /user/update-group:
+    put:
+      summary: Обновление группы учётных записей клиентов
+      operationId: updateUserGroup
+      tags:
+        - User
+      parameters:
+        - in: body
+          name: userGroupUpdateRequest
+          schema:
+            $ref: '#/components/schemas/userGroupUpdateRequest'
+      responses:
+        200:
+          description: Обновление группы учётных записей клиентов
+
+components:
+  schemas:
+    loginRequest:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+
+    loginResponse:
+      type: object
+      required:
+        - authToken
+      properties:
+        authToken:
+          type: string
+
+    getUserResponse:
+      type: object
+      required:
+        - uuid
+        - login
+        - groups
+        - status
+      properties:
+        uuid:
+          type: string
+        login:
+          type: string
+        groups:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/userStatus'
+
+    updateUserRequest:
+      type: object
+      description: Запрос на обновление параметров учётной записи.
+      required:
+        - login
+        - password
+        - groupId
+        - status
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+        groups:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/userStatus'
+
+    createUserRequest:
+      type: object
+      required:
+        - login
+        - password
+        - groups
+        - status
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+        groups:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/userStatus'
+
+    createUserResponse:
+      type: object
+      required:
+        - uuid
+      properties:
+        uuid:
+          type: string
+
+    userGroupUpdateRequest:
+      type: object
+      required:
+        - groupId
+        - newStatus
+      properties:
+        groupId:
+          type: string
+          description: Идентификатор группы, к которому должна принадлежать учётная запись
+        newStatus:
+          $ref: '#/components/schemas/userStatus'
+
+    userStatus:
+      type: string
+      enum: [ ACTIVE, BLOCKED ]

@@ -1,0 +1,175 @@
+version: '2.1'
+services:
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile-app
+    environment:
+      - "tarantool.nodes=172.20.0.3:3301,172.20.0.4:3301,172.20.0.5:3301"
+      - "tarantool.username=admin"
+      - "tarantool.password=admin"
+    ports:
+      - "8080:8080"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.2
+    links:
+      - tarantool-server1
+      - tarantool-server2
+      - tarantool-server3
+      - tarantool-server4
+      - tarantool-server8
+
+  tarantool-server1:
+    build:
+      context: .
+      dockerfile: Dockerfile-tarantool
+    ports:
+      - "8081:8081"
+    command: bash -c "cd /opt/cartridge-app && rm -rf /tmp/run
+      && cartridge start router1 --name demo --script /opt/cartridge-app/init.lua --cfg /opt/cartridge-app/instances.yml"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.3
+
+  tarantool-server2:
+    build:
+      context: .
+      dockerfile: Dockerfile-tarantool
+    ports:
+      - "8082:8081"
+      - "3302:3301"
+    command: bash -c "cd /opt/cartridge-app && rm -rf /tmp/run
+      && cartridge start router2 --name demo --script /opt/cartridge-app/init.lua --cfg /opt/cartridge-app/instances.yml"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.4
+
+  tarantool-server3:
+    build:
+      context: .
+      dockerfile: Dockerfile-tarantool
+    ports:
+      - "8083:8081"
+    command: bash -c "cd /opt/cartridge-app && rm -rf /tmp/run
+      && cartridge start router3 --name demo --script /opt/cartridge-app/init.lua --cfg /opt/cartridge-app/instances.yml"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.5
+
+  tarantool-server4:
+    build:
+      context: .
+      dockerfile: Dockerfile-tarantool
+    command: bash -c "cd /opt/cartridge-app && rm -rf /tmp/run
+      && cartridge start storage1-master --name demo --script /opt/cartridge-app/init.lua --cfg /opt/cartridge-app/instances.yml"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.6
+
+  tarantool-server5:
+    build:
+      context: .
+      dockerfile: Dockerfile-tarantool
+    command: bash -c "cd /opt/cartridge-app && rm -rf /tmp/run
+      && cartridge start storage1-replica1 --name demo --script /opt/cartridge-app/init.lua --cfg /opt/cartridge-app/instances.yml"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.7
+
+  tarantool-server6:
+    build:
+      context: .
+      dockerfile: Dockerfile-tarantool
+    command: bash -c "cd /opt/cartridge-app && rm -rf /tmp/run
+      && cartridge start storage1-replica2 --name demo --script /opt/cartridge-app/init.lua --cfg /opt/cartridge-app/instances.yml"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.8
+
+  tarantool-server7:
+    build:
+      context: .
+      dockerfile: Dockerfile-tarantool
+    command: bash -c "cd /opt/cartridge-app && rm -rf /tmp/run
+      && cartridge start storage2-replica1 --name demo --script /opt/cartridge-app/init.lua --cfg /opt/cartridge-app/instances.yml"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.9
+
+  tarantool-server8:
+    build:
+      context: .
+      dockerfile: Dockerfile-tarantool
+    command: bash -c "cd /opt/cartridge-app && rm -rf /tmp/run
+      && cartridge start storage2-master --name demo --script /opt/cartridge-app/init.lua --cfg /opt/cartridge-app/instances.yml"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.10
+
+  tarantool-server9:
+    build:
+      context: .
+      dockerfile: Dockerfile-tarantool
+    command: bash -c "cd /opt/cartridge-app && rm -rf /tmp/run
+      && cartridge start storage2-replica2 --name demo --script /opt/cartridge-app/init.lua --cfg /opt/cartridge-app/instances.yml"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.11
+
+  tarantool-server10:
+    image: quay.io/coreos/etcd:v3.3.25
+    command: "etcd
+      --enable-v2=true
+      --name etcd_node1
+      --initial-advertise-peer-urls http://172.20.0.12:2380
+      --listen-peer-urls http://172.20.0.12:2380
+      --listen-client-urls http://172.20.0.12:2379,http://127.0.0.1:2379
+      --advertise-client-urls http://172.20.0.12:2379
+      --initial-cluster-token etcd-cluster
+      --initial-cluster etcd_node1=http://172.20.0.12:2380,etcd_node2=http://172.20.0.13:2380,etcd_node3=http://172.20.0.14:2380
+      --initial-cluster-state new"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.12
+
+  tarantool-server11:
+    image: quay.io/coreos/etcd:v3.3.25
+    command: "etcd
+      --enable-v2=true
+      --name etcd_node2
+      --initial-advertise-peer-urls http://172.20.0.13:2380
+      --listen-peer-urls http://172.20.0.13:2380
+      --listen-client-urls http://172.20.0.13:2379,http://127.0.0.1:2379
+      --advertise-client-urls http://172.20.0.13:2379
+      --initial-cluster-token etcd-cluster
+      --initial-cluster etcd_node1=http://172.20.0.12:2380,etcd_node2=http://172.20.0.13:2380,etcd_node3=http://172.20.0.14:2380
+      --initial-cluster-state new"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.13
+
+  tarantool-server12:
+    image: quay.io/coreos/etcd:v3.3.25
+    command: "etcd
+      --enable-v2=true
+      --name etcd_node3
+      --initial-advertise-peer-urls http://172.20.0.14:2380
+      --listen-peer-urls http://172.20.0.14:2380
+      --listen-client-urls http://172.20.0.14:2379,http://127.0.0.1:2379
+      --advertise-client-urls http://172.20.0.14:2379
+      --initial-cluster-token etcd-cluster
+      --initial-cluster etcd_node1=http://172.20.0.12:2380,etcd_node2=http://172.20.0.13:2380,etcd_node3=http://172.20.0.14:2380
+      --initial-cluster-state new"
+    networks:
+      tarantool-network:
+        ipv4_address: 172.20.0.14
+
+networks:
+  tarantool-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1

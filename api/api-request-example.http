@@ -1,0 +1,50 @@
+POST http://192.168.99.100:8080/user
+Content-Type: application/json
+
+{
+  "login": "login",
+  "password": "password1",
+  "groups": [
+    "group1", "group2", "group3"
+  ],
+  "status": "ACTIVE"
+}
+
+###
+GET http://192.168.99.100:8080/user/{uuid}
+###
+
+PUT http://192.168.99.100:8080/user/{uuid}
+Content-Type: application/json
+
+{
+  "login": "login2",
+  "password": "password2",
+  "groups": [
+    "group4", "group5", "group6"
+  ],
+  "status": "BLOCKED"
+}
+
+###
+
+POST http://192.168.99.100:8080/login
+Content-Type: application/json
+
+{
+  "login": "login",
+  "password": "1"
+}
+
+###
+DELETE http://192.168.99.100:8080/user/{uuid}
+
+###
+
+PUT http://192.168.99.100:8080/user/update-group
+Content-Type: application/json
+
+{
+  "groupId": "group4",
+  "newStatus": "ACTIVE"
+}

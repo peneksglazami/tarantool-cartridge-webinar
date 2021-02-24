@@ -1,0 +1,15 @@
+FROM ubuntu:20.04
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Moscow
+
+# Install tarantool and cartridge
+RUN apt-get update && apt-get install curl -y
+RUN curl -L https://tarantool.io/qCLQYP/release/2.6/installer.sh --output installer.sh
+RUN chmod +x ./installer.sh
+RUN ./installer.sh
+RUN apt-get -y install tarantool
+RUN apt-get -y install cartridge-cli
+RUN apt-get -y install unzip
+
+COPY ./tarantool/cartridge-app /opt/cartridge-app
+RUN cartridge build /opt/cartridge-app
