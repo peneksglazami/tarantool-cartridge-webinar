@@ -5,6 +5,8 @@
 
 Слайды презентации доступны в файле [slides.pdf](./slides.pdf).
 
+[![WEBINAR_VIDEO](http://img.youtube.com/vi/6So4jfh7-Eo/0.jpg)](https://www.youtube.com/watch?v=6So4jfh7-Eo&t=600s "Видео на YouTube")
+
 ## Запуск демонстративного кластера через docker-compose
 На схеме ниже показан вариант развертывания демо-приложения в виде набора docker-контейнеров
 (см. файл [docker-compose.yml](./docker-compose.yml)).
