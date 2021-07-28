@@ -1,9 +1,11 @@
-# Демо-приложение для вебинара "Tarantool Cartridge: разработка отказоустойчивого кластера"
+# Демо-приложение (модуль аутентификации) для вебинара "Tarantool Cartridge: разработка отказоустойчивого кластера"
 
 В данном репозитории хранится исходный код демо-приложения, являющегося примером работы Java-приложения
 с кластером [Tarantool](http://tarantool.io).
 
 Слайды презентации доступны в файле [slides.pdf](./slides.pdf).
+
+Видео:
 
 [![WEBINAR_VIDEO](http://img.youtube.com/vi/6So4jfh7-Eo/0.jpg)](https://www.youtube.com/watch?v=6So4jfh7-Eo&t=600s "Видео на YouTube")
 
